@@ -1,15 +1,29 @@
-import cv2
-import argparse
+#!/usr/bin/env python
+"""
+Draws one ore more Y axes on a copy of the input image.
+With the input image, provide the corresponding JSON file.
+E.g. for input.png write a input.png.json with example contents:
+{
+  "points": [(0, 0), (0, 200)],
+  "lengths" [200, 240]
+}
+"""
 
+import argparse
+import cv2
+import json
+import os
 
 def add_y_axis(input_filename, output_filename, points, lengths):
   im = cv2.imread(input_filename)
+  # TODO: move to args.
   segments = 20
   tick_length = 5
   text_distance = 3
   text_y_offset = 5
 
-  for i, p in enumerate(points):
+  for i, point in enumerate(points):
+    p = tuple(point)
     length = lengths[i]
     delta = length / segments
     cv2.line(im, p, (p[0], p[1] + length), color=(0, 0, 0))
@@ -31,7 +45,10 @@ if __name__ == '__main__':
                   dest="output",
                   help="Path to the output image.")
   args = ap.parse_args()
-  # TODO: externalize to a json file.
-  points = [(13, 15), (10, 455)]
-  lengths = [335, 390]
-  add_y_axis(args.image, args.output, points, lengths)
+  json_file = args.image + ".json"
+  if not os.path.exists(json_file):
+    raise Exception("Missing input json file " + json_file)
+
+  with open(json_file, "r") as f:
+    data = json.load(f)
+  add_y_axis(args.image, args.output, data["points"], data["lengths"])
