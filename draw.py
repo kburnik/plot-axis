@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-Draws one ore more Y axes on a copy of the input image.
-With the input image, provide the corresponding JSON file.
-E.g. for input.png write a input.png.json with example contents:
+Draws one ore more Y axes with percentage ticks on a copy of the input image.
+With the input image, you need to provide the corresponding JSON file.
+E.g. for input.png write am input.png.json with contents similar to:
 {
   "points": [(0, 0), (0, 200)],
   "lengths" [200, 240]
@@ -14,7 +14,7 @@ import cv2
 import json
 import os
 
-def add_y_axis(input_filename, output_filename, points, lengths):
+def add_y_axes(input_filename, output_filename, points, lengths):
   im = cv2.imread(input_filename)
   # TODO: move to args.
   segments = 20
@@ -51,4 +51,4 @@ if __name__ == '__main__':
 
   with open(json_file, "r") as f:
     data = json.load(f)
-  add_y_axis(args.image, args.output, data["points"], data["lengths"])
+  add_y_axes(args.image, args.output, data["points"], data["lengths"])
